@@ -7,7 +7,7 @@ compatibility_flags = [ "nodejs_compat" ]
 [[d1_databases]]
 binding = "DB"
 database_name = "cafe_db"
-database_id = "local-cafe-db"
+database_id = "00be4429-3063-4a19-88b8-3b24b2f9fe5a"
 migrations_dir = "migrations"
 
 [site]
