@@ -10,5 +10,6 @@ database_name = "cafe_db"
 database_id = "00be4429-3063-4a19-88b8-3b24b2f9fe5a"
 migrations_dir = "migrations"
 
-[site]
-bucket = "./public"
+[assets]
+directory = "./public"
+binding = "ASSETS"

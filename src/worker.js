@@ -4,6 +4,21 @@ import { layout } from './templates/layout.js';
 
 const app = new Hono();
 
+// Servir archivos estáticos subidos a Cloudflare Assets
+app.get('/images/*', async (c) => {
+  if (c.env.ASSETS) {
+    return c.env.ASSETS.fetch(c.req.raw);
+  }
+  return c.notFound();
+});
+
+app.get('/css/*', async (c) => {
+  if (c.env.ASSETS) {
+    return c.env.ASSETS.fetch(c.req.raw);
+  }
+  return c.notFound();
+});
+
 // Helper para parsear sesión desde cookies en el Worker
 function getSession(c) {
   const sessionCookie = getCookie(c, 'cf_cafe_session');

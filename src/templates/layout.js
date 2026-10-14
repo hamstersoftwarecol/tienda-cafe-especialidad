@@ -6,38 +6,30 @@ export function layout({ title, user, cartCount = 0, flash = {}, content }) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title ? title + ' | ' : ''}Caficultura de Origen & Café de Especialidad</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        coffee: {
-                            50: '#FDF8F5',
-                            100: '#F7EDE6',
-                            200: '#EBD5C6',
-                            600: '#8C5835',
-                            700: '#6E4327',
-                            800: '#4A2E1B',
-                            900: '#2C1B10',
-                            950: '#1A0E08',
-                        },
-                        origin: {
-                            50: '#F4F7F4',
-                            600: '#3D5A40',
-                            700: '#2C442E',
-                            800: '#1E3020',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .font-serif { font-family: 'Playfair Display', serif; }
+        .bg-coffee-950 { background-color: #1A0E08; }
+        .bg-coffee-900 { background-color: #2C1B10; }
+        .bg-coffee-800 { background-color: #4A2E1B; }
+        .bg-coffee-50 { background-color: #FDF8F5; }
+        .text-coffee-950 { color: #1A0E08; }
+        .text-coffee-900 { color: #2C1B10; }
+        .text-coffee-800 { color: #4A2E1B; }
+        .text-coffee-700 { color: #6E4327; }
+        .border-coffee-900 { border-color: #2C1B10; }
+        .border-coffee-800 { border-color: #4A2E1B; }
+        .bg-origin-900 { background-color: #1E3020; }
+        .bg-origin-800 { background-color: #1E3020; }
+        .bg-origin-700 { background-color: #2C442E; }
+        .bg-origin-600 { background-color: #3D5A40; }
+        .bg-origin-100 { background-color: #E8EFE9; }
+        .bg-origin-50 { background-color: #F4F7F4; }
+        .text-origin-700 { color: #2C442E; }
+        .text-origin-600 { color: #3D5A40; }
     </style>
 </head>
 <body class="bg-stone-50 text-stone-800 flex flex-col min-h-screen">
