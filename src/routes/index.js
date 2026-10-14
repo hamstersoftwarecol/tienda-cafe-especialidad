@@ -44,6 +44,35 @@ router.get('/origen', (req, res) => {
     });
 });
 
+// Métodos de Preparación
+router.get('/metodos', (req, res) => {
+    renderWithLayout(res, req, 'metodos', {
+        title: 'Guías de Preparación & Barismo en Casa'
+    });
+});
+
+// Suscripciones de Café
+router.get('/suscripciones', (req, res) => {
+    renderWithLayout(res, req, 'suscripciones', {
+        title: 'Club de Suscripción Cafetera'
+    });
+});
+
+// Mayoristas / B2B
+router.get('/mayoristas', (req, res) => {
+    renderWithLayout(res, req, 'mayoristas', {
+        title: 'Café de Especialidad para Cafeterías & Mayoristas'
+    });
+});
+
+router.post('/mayoristas', (req, res) => {
+    const { name, businessName } = req.body;
+    req.session.flash = { 
+        success: `¡Gracias ${name}! Hemos recibido la solicitud para "${businessName}". Nuestro equipo de finca te enviará la lista mayorista por WhatsApp/correo.` 
+    };
+    res.redirect('/mayoristas');
+});
+
 // Catalog Page
 router.get('/tienda', (req, res) => {
     const products = db.prepare('SELECT * FROM products ORDER BY id DESC').all();
@@ -299,6 +328,45 @@ router.get('/admin', requireAdmin, (req, res) => {
         products,
         totalSales
     });
+});
+
+// Admin: Formulario nuevo producto
+router.get('/admin/productos/nuevo', requireAdmin, (req, res) => {
+    renderWithLayout(res, req, 'admin/nuevo_producto', {
+        title: 'Registrar Nuevo Lote de Café'
+    });
+});
+
+// Admin: Guardar nuevo producto
+router.post('/admin/productos/nuevo', requireAdmin, (req, res) => {
+    const { name, slug, variety, process, altitude_masl, sca_score, tasting_notes, description, price, stock, image_url, is_featured } = req.body;
+    
+    try {
+        db.prepare(`
+            INSERT INTO products (name, slug, variety, process, altitude_masl, sca_score, tasting_notes, description, price, stock, image_url, is_featured)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(
+            name, 
+            slug.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-'), 
+            variety, 
+            process, 
+            parseInt(altitude_masl, 10), 
+            parseFloat(sca_score), 
+            tasting_notes, 
+            description, 
+            parseFloat(price), 
+            parseInt(stock, 10) || 50, 
+            image_url || 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=800&q=80', 
+            is_featured ? 1 : 0
+        );
+
+        req.session.flash = { success: `¡Lote "${name}" creado y publicado exitosamente en el catálogo!` };
+        res.redirect('/admin');
+    } catch (err) {
+        console.error('Error al crear producto:', err);
+        req.session.flash = { error: 'Error al registrar el lote: ' + err.message };
+        res.redirect('/admin/productos/nuevo');
+    }
 });
 
 // Admin: Update order status
