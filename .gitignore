@@ -1,6 +1,8 @@
+node_modules
+.wrangler
 .build
-.swiftpm
-*.sqlite
-*.sqlite-shm
-*.sqlite-wal
+.env
+cafe.sqlite
+cafe.sqlite-shm
+cafe.sqlite-wal
 .DS_Store

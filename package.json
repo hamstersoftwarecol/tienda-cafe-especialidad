@@ -9,6 +9,10 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
+    "worker:dev": "wrangler dev",
+    "worker:deploy": "wrangler deploy",
+    "d1:init": "wrangler d1 execute cafe_db --local --file=migrations/0001_init.sql",
+    "d1:init:prod": "wrangler d1 execute cafe_db --remote --file=migrations/0001_init.sql",
     "tunnel": "npx cloudflared tunnel --url http://localhost:3000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,5 +26,10 @@
     "ejs": "^7.0.1",
     "express": "^5.3.0",
     "express-session": "^1.19.0"
+  },
+  "devDependencies": {
+    "@hono/node-server": "^2.1.5",
+    "hono": "^4.13.13",
+    "wrangler": "^4.151.0"
   }
 }

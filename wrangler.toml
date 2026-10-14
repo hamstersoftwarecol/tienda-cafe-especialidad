@@ -1,13 +1,14 @@
 name = "tienda-cafe-especialidad"
+main = "src/worker.js"
 compatibility_date = "2026-10-14"
+compatibility_flags = [ "nodejs_compat" ]
 
-# Configuración de Cloudflare Tunnel y Proxy
+# Base de datos Serverless Cloudflare D1
+[[d1_databases]]
+binding = "DB"
+database_name = "cafe_db"
+database_id = "local-cafe-db"
+migrations_dir = "migrations"
+
 [site]
 bucket = "./public"
-
-# Enrutamiento y cabeceras perimetrales recomendadas
-[env.production]
-name = "tienda-cafe-production"
-routes = [
-  { pattern = "*/*", zone_name = "tudominio.com" }
-]
