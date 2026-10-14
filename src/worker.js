@@ -68,7 +68,7 @@ app.get('/', async (c) => {
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="max-w-2xl space-y-6">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-semibold tracking-wider uppercase">
-                    <i class="fa-solid fa-award"></i> Café de Especialidad en Cloudflare Edge
+                    <i class="fa-solid fa-award"></i> Café de Especialidad &bull; Cosecha 2026
                 </div>
                 <h1 class="font-serif text-4xl sm:text-6xl font-bold tracking-tight text-white leading-tight">
                     El alma de la montaña en cada taza.
@@ -604,8 +604,8 @@ app.get('/admin', async (c) => {
     <div class="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center pb-6 border-b border-stone-200 mb-8">
             <div>
-                <span class="text-xs font-bold text-amber-700 uppercase tracking-widest">Panel de Control Cloudflare D1</span>
-                <h1 class="font-serif text-3xl font-bold text-stone-900 mt-1">Administración de la Finca</h1>
+                <span class="text-xs font-bold text-amber-700 uppercase tracking-widest">Panel de Administración</span>
+                <h1 class="font-serif text-3xl font-bold text-stone-900 mt-1">Gestión de la Finca & Pedidos</h1>
             </div>
             <a href="/admin/productos/nuevo" class="bg-coffee-900 text-white font-bold text-xs uppercase px-5 py-3 rounded-full hover:bg-amber-600">
                 + Nuevo Lote

@@ -42,7 +42,7 @@ export function layout({ title, user, cartCount = 0, flash = {}, content }) {
 </head>
 <body class="bg-stone-50 text-stone-800 flex flex-col min-h-screen">
     <div class="bg-coffee-950 text-amber-200/80 text-xs py-2 px-4 text-center tracking-widest uppercase font-medium">
-        🌱 Cosecha de Altura • Finca Los Andes (1,850 m.s.n.m.) • Cloudflare Workers & D1 Edge
+        🌱 Cosecha de Altura • Finca Los Andes (1,850 m.s.n.m.) • Envíos directos de finca a tu mesa
     </div>
 
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-stone-200">
@@ -125,7 +125,7 @@ export function layout({ title, user, cartCount = 0, flash = {}, content }) {
                 <div class="space-y-4">
                     <span class="font-serif text-2xl font-bold tracking-tight text-white block">CAFÉ ORIGEN</span>
                     <p class="text-sm text-stone-400 leading-relaxed">
-                        Finca caficultora familiar en Cloudflare Edge con base de datos D1. Preservación de variedades exóticas y fermentaciones de precisión.
+                        Finca caficultora familiar dedicada a la preservación de variedades exóticas, fermentaciones de precisión y comercio justo directo de origen.
                     </p>
                     <div class="flex items-center space-x-3 text-amber-300">
                         <i class="fa-solid fa-mountain text-sm"></i>
@@ -158,7 +158,7 @@ export function layout({ title, user, cartCount = 0, flash = {}, content }) {
                 </div>
             </div>
             <div class="mt-12 pt-8 border-t border-coffee-900 text-center text-xs text-stone-500">
-                &copy; ${new Date().getFullYear()} Café Origen en Cloudflare Workers & D1.
+                &copy; ${new Date().getFullYear()} Café Origen - Finca Caficultora & Café de Especialidad.
             </div>
         </div>
     </footer>
