@@ -1,0 +1,13 @@
+services:
+  tienda-cafe:
+    build: .
+    container_name: tienda-cafe-especialidad
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - SESSION_SECRET=finca_cafe_super_secret_production_key_2026
+    volumes:
+      - ./cafe.sqlite:/app/cafe.sqlite
