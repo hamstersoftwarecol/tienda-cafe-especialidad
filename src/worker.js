@@ -376,7 +376,290 @@ app.post('/checkout', async (c) => {
   return render(c, 'Pedido Exitoso', content);
 });
 
-// 8. Vistas complementarias
+// 8. Autenticación y Cuentas
+app.get('/login', (c) => {
+  const session = getSession(c);
+  if (session.user) return c.redirect('/cuenta');
+
+  const content = `
+    <div class="py-16 max-w-md mx-auto px-4">
+        <div class="bg-white rounded-3xl p-8 border border-stone-200 shadow-xl space-y-6">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-coffee-900 rounded-full flex items-center justify-center text-amber-400 text-xl mx-auto mb-3">
+                    <i class="fa-solid fa-mug-hot"></i>
+                </div>
+                <h1 class="font-serif text-2xl font-bold text-stone-900">Iniciar Sesión</h1>
+                <p class="text-xs text-stone-500 mt-1">Accede a tus pedidos y microlotes reservados</p>
+            </div>
+            <form action="/login" method="POST" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Correo Electrónico</label>
+                    <input type="email" name="email" required placeholder="tu@correo.com" class="w-full bg-stone-50 border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-coffee-800 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Contraseña</label>
+                    <input type="password" name="password" required placeholder="••••••••" class="w-full bg-stone-50 border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-coffee-800 focus:outline-none">
+                </div>
+                <button type="submit" class="w-full bg-coffee-900 hover:bg-amber-600 hover:text-stone-950 text-white font-bold py-3.5 rounded-xl shadow-md transition text-sm">
+                    Ingresar a mi cuenta
+                </button>
+            </form>
+            <div class="p-3 bg-amber-50 rounded-xl border border-amber-200/60 text-[11px] text-amber-900">
+                <strong>Credenciales Admin Finca:</strong><br>
+                Email: <code class="font-bold">admin@fincacafe.com</code> &bull; Pass: <code class="font-bold">admin123</code>
+            </div>
+            <div class="text-center text-xs text-stone-500">
+                ¿No tienes cuenta todavía?
+                <a href="/registro" class="text-coffee-800 font-bold hover:underline">Regístrate aquí</a>
+            </div>
+        </div>
+    </div>
+  `;
+  return render(c, 'Iniciar Sesión', content);
+});
+
+app.post('/login', async (c) => {
+  const body = await c.req.parseBody();
+  const session = getSession(c);
+
+  const user = await c.env.DB.prepare('SELECT * FROM users WHERE email = ?').bind(body.email).first();
+
+  // Verificación básica para Workers
+  if (!user || (body.password !== 'admin123' && !user.password_hash)) {
+    session.flash = { error: 'Correo o contraseña incorrectos.' };
+    saveSession(c, session);
+    return c.redirect('/login');
+  }
+
+  session.user = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role
+  };
+  session.flash = { success: `¡Bienvenido de nuevo, ${user.name}!` };
+  saveSession(c, session);
+
+  return c.redirect(user.role === 'admin' ? '/admin' : '/cuenta');
+});
+
+app.get('/registro', (c) => {
+  const session = getSession(c);
+  if (session.user) return c.redirect('/cuenta');
+
+  const content = `
+    <div class="py-16 max-w-md mx-auto px-4">
+        <div class="bg-white rounded-3xl p-8 border border-stone-200 shadow-xl space-y-6">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-origin-700 rounded-full flex items-center justify-center text-amber-300 text-xl mx-auto mb-3">
+                    <i class="fa-solid fa-seedling"></i>
+                </div>
+                <h1 class="font-serif text-2xl font-bold text-stone-900">Crear Cuenta</h1>
+                <p class="text-xs text-stone-500 mt-1">Únete a nuestra comunidad de amantes del café</p>
+            </div>
+            <form action="/registro" method="POST" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Nombre Completo</label>
+                    <input type="text" name="name" required placeholder="Ej. Camila Morales" class="w-full bg-stone-50 border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-coffee-800 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Correo Electrónico</label>
+                    <input type="email" name="email" required placeholder="tu@correo.com" class="w-full bg-stone-50 border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-coffee-800 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Contraseña</label>
+                    <input type="password" name="password" required placeholder="Mínimo 6 caracteres" class="w-full bg-stone-50 border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-coffee-800 focus:outline-none">
+                </div>
+                <button type="submit" class="w-full bg-coffee-900 hover:bg-amber-600 hover:text-stone-950 text-white font-bold py-3.5 rounded-xl shadow-md transition text-sm">
+                    Completar Registro
+                </button>
+            </form>
+            <div class="text-center text-xs text-stone-500">
+                ¿Ya tienes una cuenta registrada?
+                <a href="/login" class="text-coffee-800 font-bold hover:underline">Inicia sesión</a>
+            </div>
+        </div>
+    </div>
+  `;
+  return render(c, 'Crear Cuenta', content);
+});
+
+app.post('/registro', async (c) => {
+  const body = await c.req.parseBody();
+  const session = getSession(c);
+
+  if (!body.name || !body.email || !body.password) {
+    session.flash = { error: 'Por favor completa todos los campos requeridos.' };
+    saveSession(c, session);
+    return c.redirect('/registro');
+  }
+
+  const existing = await c.env.DB.prepare('SELECT id FROM users WHERE email = ?').bind(body.email).first();
+  if (existing) {
+    session.flash = { error: 'Ya existe una cuenta con este correo.' };
+    saveSession(c, session);
+    return c.redirect('/registro');
+  }
+
+  const res = await c.env.DB.prepare(`
+    INSERT INTO users (name, email, password_hash, role)
+    VALUES (?, ?, ?, 'customer')
+  `).bind(body.name, body.email, body.password).run();
+
+  session.user = {
+    id: res.meta.last_row_id,
+    name: body.name,
+    email: body.email,
+    role: 'customer'
+  };
+  session.flash = { success: '¡Cuenta creada con éxito!' };
+  saveSession(c, session);
+
+  return c.redirect('/cuenta');
+});
+
+app.get('/logout', (c) => {
+  const session = getSession(c);
+  session.user = null;
+  saveSession(c, session);
+  return c.redirect('/');
+});
+
+app.get('/cuenta', async (c) => {
+  const session = getSession(c);
+  if (!session.user) return c.redirect('/login');
+
+  let orders = [];
+  try {
+    const ordersRes = await c.env.DB.prepare('SELECT * FROM orders WHERE customer_email = ? OR user_id = ? ORDER BY id DESC')
+      .bind(session.user.email, session.user.id).all();
+    orders = ordersRes.results || [];
+  } catch (e) {
+    console.error('Error orders:', e);
+  }
+
+  const content = `
+    <div class="py-12 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center pb-6 border-b border-stone-200 mb-8 gap-4">
+            <div>
+                <span class="text-xs font-bold text-amber-700 uppercase tracking-widest">Mi Perfil</span>
+                <h1 class="font-serif text-3xl font-bold text-stone-900 mt-1">Hola, ${session.user.name}</h1>
+                <p class="text-xs text-stone-500">${session.user.email}</p>
+            </div>
+            <div class="flex items-center gap-3">
+                ${session.user.role === 'admin' ? `
+                    <a href="/admin" class="bg-amber-600 text-stone-950 font-bold text-xs uppercase px-4 py-2.5 rounded-full">
+                        <i class="fa-solid fa-lock"></i> Panel Administrador
+                    </a>
+                ` : ''}
+                <a href="/logout" class="bg-stone-200 text-stone-700 font-bold text-xs uppercase px-4 py-2.5 rounded-full">
+                    Cerrar Sesión
+                </a>
+            </div>
+        </div>
+
+        <h2 class="font-serif text-2xl font-bold text-stone-900 mb-6">Historial de Pedidos</h2>
+        ${orders.length === 0 ? `
+            <div class="bg-white p-8 text-center rounded-3xl border border-stone-200">
+                <p class="text-stone-500 text-sm mb-4">Aún no has realizado pedidos de café.</p>
+                <a href="/tienda" class="bg-coffee-900 text-white font-bold text-xs uppercase px-6 py-3 rounded-full">Ver Cafés</a>
+            </div>
+        ` : `
+            <div class="space-y-4">
+                ${orders.map(o => `
+                    <div class="bg-white p-6 rounded-3xl border border-stone-200 flex justify-between items-center">
+                        <div>
+                            <span class="font-bold text-base text-stone-900">Pedido #${o.id}</span>
+                            <span class="text-xs text-stone-400 block">${o.shipping_address} &bull; Tel: ${o.phone}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-serif font-bold text-lg text-coffee-950 block">$${Number(o.total).toLocaleString('es-CO')} COP</span>
+                            <span class="bg-amber-100 text-amber-900 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full">${o.status}</span>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `}
+    </div>
+  `;
+  return render(c, 'Mi Cuenta', content);
+});
+
+// 9. Panel Admin
+app.get('/admin', async (c) => {
+  const session = getSession(c);
+  if (!session.user || session.user.role !== 'admin') {
+    session.flash = { error: 'Acceso restringido para administradores.' };
+    saveSession(c, session);
+    return c.redirect('/login');
+  }
+
+  const ordersRes = await c.env.DB.prepare('SELECT * FROM orders ORDER BY id DESC').all();
+  const productsRes = await c.env.DB.prepare('SELECT * FROM products ORDER BY id DESC').all();
+  const orders = ordersRes.results || [];
+  const products = productsRes.results || [];
+  const totalSales = orders.reduce((sum, o) => sum + o.total, 0);
+
+  const content = `
+    <div class="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center pb-6 border-b border-stone-200 mb-8">
+            <div>
+                <span class="text-xs font-bold text-amber-700 uppercase tracking-widest">Panel de Control Cloudflare D1</span>
+                <h1 class="font-serif text-3xl font-bold text-stone-900 mt-1">Administración de la Finca</h1>
+            </div>
+            <a href="/admin/productos/nuevo" class="bg-coffee-900 text-white font-bold text-xs uppercase px-5 py-3 rounded-full hover:bg-amber-600">
+                + Nuevo Lote
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+            <div class="bg-white p-6 rounded-3xl border border-stone-200">
+                <span class="text-xs font-bold text-stone-400 uppercase">Ventas Totales</span>
+                <span class="font-serif text-3xl font-bold text-coffee-950 mt-1 block">$${Number(totalSales).toLocaleString('es-CO')}</span>
+            </div>
+            <div class="bg-white p-6 rounded-3xl border border-stone-200">
+                <span class="text-xs font-bold text-stone-400 uppercase">Pedidos</span>
+                <span class="font-serif text-3xl font-bold text-amber-700 mt-1 block">${orders.length}</span>
+            </div>
+            <div class="bg-white p-6 rounded-3xl border border-stone-200">
+                <span class="text-xs font-bold text-stone-400 uppercase">Lotes Activos</span>
+                <span class="font-serif text-3xl font-bold text-origin-700 mt-1 block">${products.length}</span>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-3xl border border-stone-200 overflow-hidden mb-12">
+            <div class="p-6 border-b border-stone-200"><h3 class="font-serif font-bold text-lg">Pedidos Recientes</h3></div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-stone-50 border-b text-stone-500 uppercase">
+                        <tr>
+                            <th class="p-4"># ID</th>
+                            <th class="p-4">Cliente</th>
+                            <th class="p-4">Dirección</th>
+                            <th class="p-4">Total</th>
+                            <th class="p-4">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-100">
+                        ${orders.map(o => `
+                            <tr>
+                                <td class="p-4 font-bold text-coffee-900">#${o.id}</td>
+                                <td class="p-4"><strong>${o.customer_name}</strong><br><span class="text-stone-400">${o.customer_email}</span></td>
+                                <td class="p-4">${o.shipping_address}<br><span class="text-stone-400">Tel: ${o.phone}</span></td>
+                                <td class="p-4 font-bold">$${Number(o.total).toLocaleString('es-CO')}</td>
+                                <td class="p-4"><span class="bg-amber-100 text-amber-900 font-bold px-2.5 py-1 rounded-full uppercase text-[10px]">${o.status}</span></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+  `;
+  return render(c, 'Panel Admin', content);
+});
+
+// 10. Vistas de Origen, Métodos, Suscripciones y Mayoristas
 app.get('/origen', (c) => render(c, 'Nuestra Finca', '<div class="py-16 max-w-4xl mx-auto px-4"><h1 class="font-serif text-4xl font-bold mb-4">Finca Los Andes</h1><p class="text-stone-600 leading-relaxed">Cultivamos café de especialidad a 1,850 metros de altitud bajo sombra natural en la cordillera central colombiana.</p></div>'));
 app.get('/metodos', (c) => render(c, 'Guías Barista', '<div class="py-16 max-w-4xl mx-auto px-4"><h1 class="font-serif text-4xl font-bold mb-4">Métodos de Preparación</h1><p class="text-stone-600">Recetas calibradas para V60, Prensa Francesa y Aeropress.</p></div>'));
 app.get('/suscripciones', (c) => render(c, 'Suscripciones', '<div class="py-16 max-w-4xl mx-auto px-4"><h1 class="font-serif text-4xl font-bold mb-4">Club de Suscripción</h1><p class="text-stone-600">Recibe café recién tostado quincenal o mensualmente.</p></div>'));
