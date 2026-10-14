@@ -1,0 +1,51 @@
+<div class="py-16 max-w-xl mx-auto px-4 text-center">
+    <div class="bg-white rounded-3xl p-10 border border-stone-200 shadow-xl space-y-6">
+        <div class="w-20 h-20 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner">
+            <i class="fa-solid fa-check"></i>
+        </div>
+
+        <div>
+            <span class="text-xs font-bold text-amber-700 uppercase tracking-widest block mb-1">¡Gracias por apoyar el campo!</span>
+            <h1 class="font-serif text-3xl font-bold text-stone-900">Pedido Recibido con Éxito</h1>
+            <p class="text-sm text-stone-600 mt-2">
+                Número de Pedido: <span class="font-bold text-coffee-900">#<%= order.id %></span>
+            </p>
+        </div>
+
+        <div class="bg-stone-50 rounded-2xl p-6 text-left text-xs space-y-3 border border-stone-200">
+            <div class="flex justify-between border-b border-stone-200 pb-2">
+                <span class="text-stone-500">Destinatario:</span>
+                <span class="font-bold text-stone-800"><%= order.customer_name %></span>
+            </div>
+            <div class="flex justify-between border-b border-stone-200 pb-2">
+                <span class="text-stone-500">Dirección:</span>
+                <span class="font-bold text-stone-800"><%= order.shipping_address %></span>
+            </div>
+            <div class="flex justify-between border-b border-stone-200 pb-2">
+                <span class="text-stone-500">Total a Pagar:</span>
+                <span class="font-bold text-coffee-950 font-serif text-sm">$<%= order.total.toLocaleString('es-CO') %> COP</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-stone-500">Estado del Pedido:</span>
+                <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-full uppercase text-[10px]">
+                    <%= order.status === 'pending' ? 'En cola para tueste' : order.status %>
+                </span>
+            </div>
+        </div>
+
+        <p class="text-xs text-stone-500 leading-relaxed">
+            Hemos registrado tu pedido en la finca. Tostamos en baches pequeños para garantizar máxima frescura aromática.
+        </p>
+
+        <div class="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="/tienda" class="bg-coffee-900 hover:bg-coffee-800 text-white font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-full transition">
+                Volver a la Tienda
+            </a>
+            <% if (user) { %>
+                <a href="/cuenta" class="bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-full transition">
+                    Ver mis pedidos
+                </a>
+            <% } %>
+        </div>
+    </div>
+</div>

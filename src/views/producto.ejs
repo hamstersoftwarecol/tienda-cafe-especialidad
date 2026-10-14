@@ -1,0 +1,129 @@
+<div class="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center text-xs font-semibold text-stone-500 mb-8 space-x-2">
+        <a href="/" class="hover:text-coffee-800">Inicio</a>
+        <span>/</span>
+        <a href="/tienda" class="hover:text-coffee-800">Tienda</a>
+        <span>/</span>
+        <span class="text-stone-900"><%= product.name %></span>
+    </nav>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <!-- Imagen y Ficha de Catación -->
+        <div class="space-y-6">
+            <div class="relative rounded-3xl overflow-hidden shadow-lg bg-stone-100 border border-stone-200">
+                <img src="<%= product.image_url %>" alt="<%= product.name %>" class="w-full h-[450px] object-cover">
+                <div class="absolute top-6 left-6 bg-coffee-950/90 text-amber-300 font-bold px-4 py-1.5 rounded-full backdrop-blur flex items-center gap-1.5">
+                    <i class="fa-solid fa-medal text-sm"></i> <%= product.sca_score %> SCA Puntaje
+                </div>
+            </div>
+
+            <!-- Ficha Técnica Agronómica -->
+            <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm">
+                <h3 class="font-serif text-lg font-bold text-coffee-950 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-list text-amber-600"></i> Ficha de Trazabilidad del Lote
+                </h3>
+                <div class="grid grid-cols-2 gap-4 text-xs">
+                    <div class="p-3 bg-stone-50 rounded-xl">
+                        <span class="text-stone-400 block font-medium">Variedad Botánica</span>
+                        <span class="font-bold text-stone-800 text-sm"><%= product.variety %></span>
+                    </div>
+                    <div class="p-3 bg-stone-50 rounded-xl">
+                        <span class="text-stone-400 block font-medium">Proceso de Beneficio</span>
+                        <span class="font-bold text-stone-800 text-sm"><%= product.process %></span>
+                    </div>
+                    <div class="p-3 bg-stone-50 rounded-xl">
+                        <span class="text-stone-400 block font-medium">Altitud de Cultivo</span>
+                        <span class="font-bold text-stone-800 text-sm"><%= product.altitude_masl %> m.s.n.m.</span>
+                    </div>
+                    <div class="p-3 bg-stone-50 rounded-xl">
+                        <span class="text-stone-400 block font-medium">Perfil de Tueste</span>
+                        <span class="font-bold text-stone-800 text-sm">Medio Claro (Filtro / Espresso)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Opciones de Compra y Personalización -->
+        <div class="bg-white rounded-3xl p-8 border border-stone-200 shadow-sm space-y-6">
+            <div>
+                <span class="text-xs font-bold text-amber-700 uppercase tracking-widest block mb-1">Microlote de Origen Único</span>
+                <h1 class="font-serif text-3xl sm:text-4xl font-bold text-stone-900"><%= product.name %></h1>
+                
+                <div class="mt-4 p-4 bg-amber-50/80 rounded-2xl border border-amber-200/60">
+                    <span class="text-xs font-bold uppercase tracking-wider text-amber-800 block mb-1">Notas Sensoriales en Taza:</span>
+                    <p class="text-base font-semibold text-coffee-950 font-serif italic">
+                        "<%= product.tasting_notes %>"
+                    </p>
+                </div>
+
+                <p class="text-sm text-stone-600 mt-4 leading-relaxed">
+                    <%= product.description %>
+                </p>
+            </div>
+
+            <!-- Formulario de Pedido -->
+            <form action="/carrito/agregar" method="POST" class="space-y-6 pt-4 border-t border-stone-100">
+                <input type="hidden" name="productId" value="<%= product.id %>">
+
+                <!-- Selector de Peso -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-2">
+                        Presentación / Peso de la Bolsa:
+                    </label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="weight" value="250" checked class="peer sr-only">
+                            <div class="p-3 text-center border-2 border-stone-200 rounded-xl peer-checked:border-coffee-900 peer-checked:bg-coffee-50 transition">
+                                <span class="block font-bold text-sm text-stone-900">250g</span>
+                                <span class="block text-[11px] text-stone-500">Ideal degustación</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="weight" value="500" class="peer sr-only">
+                            <div class="p-3 text-center border-2 border-stone-200 rounded-xl peer-checked:border-coffee-900 peer-checked:bg-coffee-50 transition">
+                                <span class="block font-bold text-sm text-stone-900">500g</span>
+                                <span class="block text-[11px] text-stone-500">Semanal</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="weight" value="1000" class="peer sr-only">
+                            <div class="p-3 text-center border-2 border-stone-200 rounded-xl peer-checked:border-coffee-900 peer-checked:bg-coffee-50 transition">
+                                <span class="block font-bold text-sm text-stone-900">1000g</span>
+                                <span class="block text-[11px] text-stone-500">Kilo Pro</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Selector de Tipo de Molienda -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-2">
+                        Tipo de Molienda según tu Método:
+                    </label>
+                    <select name="grind" class="w-full bg-stone-50 border border-stone-300 rounded-xl p-3 text-sm font-medium text-stone-800 focus:outline-none focus:ring-2 focus:ring-coffee-800">
+                        <option value="Grano Entero">En Grano Entero (Recomendado para moler fresco)</option>
+                        <option value="Molienda Media - V60 / Chemex / Filtro">Molienda Media (V60, Chemex, Cafetera de Goteo)</option>
+                        <option value="Molienda Fina - Espresso / Moka Italiana">Molienda Fina (Máquina de Espresso, Moka Italiana)</option>
+                        <option value="Molienda Gruesa - Prensa Francesa / Cold Brew">Molienda Gruesa (Prensa Francesa, Cold Brew)</option>
+                        <option value="Molienda Media-Fina - Aeropress">Molienda Media-Fina (Aeropress)</option>
+                    </select>
+                </div>
+
+                <!-- Cantidad y Botón Añadir -->
+                <div class="flex items-center gap-4 pt-2">
+                    <div class="w-24">
+                        <label class="block text-xs font-bold text-stone-600 mb-1">Cantidad:</label>
+                        <input type="number" name="quantity" value="1" min="1" max="10" class="w-full text-center border border-stone-300 rounded-xl p-3 text-sm font-bold">
+                    </div>
+                    <div class="flex-grow pt-5">
+                        <button type="submit" class="w-full bg-coffee-900 hover:bg-amber-600 hover:text-stone-950 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            <span>Añadir al Carrito &bull; $<%= product.price.toLocaleString('es-CO') %> COP</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

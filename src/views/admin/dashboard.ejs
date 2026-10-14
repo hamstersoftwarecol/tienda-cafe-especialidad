@@ -1,0 +1,113 @@
+<div class="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col sm:flex-row justify-between sm:items-center pb-6 border-b border-stone-200 mb-8 gap-4">
+        <div>
+            <span class="text-xs font-bold text-amber-700 uppercase tracking-widest">Panel de Administración</span>
+            <h1 class="font-serif text-3xl font-bold text-stone-900 mt-1">Gestión de Finca & Pedidos</h1>
+        </div>
+        <a href="/admin/productos/nuevo" class="inline-flex items-center gap-2 bg-coffee-900 hover:bg-amber-600 hover:text-stone-950 text-white font-bold text-xs uppercase px-5 py-3 rounded-full transition">
+            <i class="fa-solid fa-plus"></i> Nuevo Lote de Café
+        </a>
+    </div>
+
+    <!-- Tarjetas de Métricas -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+        <div class="bg-white p-6 rounded-3xl border border-stone-200 shadow-sm">
+            <span class="text-xs font-bold text-stone-400 uppercase tracking-wider block">Total Ventas Finca</span>
+            <span class="font-serif text-3xl font-bold text-coffee-950 mt-1 block">
+                $<%= totalSales.toLocaleString('es-CO') %> COP
+            </span>
+        </div>
+        <div class="bg-white p-6 rounded-3xl border border-stone-200 shadow-sm">
+            <span class="text-xs font-bold text-stone-400 uppercase tracking-wider block">Pedidos Realizados</span>
+            <span class="font-serif text-3xl font-bold text-amber-700 mt-1 block"><%= orders.length %></span>
+        </div>
+        <div class="bg-white p-6 rounded-3xl border border-stone-200 shadow-sm">
+            <span class="text-xs font-bold text-stone-400 uppercase tracking-wider block">Lotes en Catálogo</span>
+            <span class="font-serif text-3xl font-bold text-origin-700 mt-1 block"><%= products.length %></span>
+        </div>
+    </div>
+
+    <!-- Tabla de Pedidos Recientes -->
+    <div class="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden mb-12">
+        <div class="p-6 border-b border-stone-200">
+            <h3 class="font-serif text-xl font-bold text-stone-900">Pedidos de Café Recientes</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-stone-50 border-b border-stone-200 text-stone-500 uppercase tracking-wider">
+                    <tr>
+                        <th class="p-4 font-bold"># ID</th>
+                        <th class="p-4 font-bold">Cliente / Correo</th>
+                        <th class="p-4 font-bold">Dirección y Teléfono</th>
+                        <th class="p-4 font-bold">Total</th>
+                        <th class="p-4 font-bold">Estado</th>
+                        <th class="p-4 font-bold text-right">Actualizar</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-stone-100">
+                    <% if (orders.length === 0) { %>
+                        <tr>
+                            <td colspan="6" class="p-8 text-center text-stone-400">No hay pedidos registrados todavía.</td>
+                        </tr>
+                    <% } else { %>
+                        <% orders.forEach(function(o) { %>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="p-4 font-bold text-coffee-900">#<%= o.id %></td>
+                                <td class="p-4">
+                                    <span class="font-bold block text-stone-800"><%= o.customer_name %></span>
+                                    <span class="text-stone-400"><%= o.customer_email %></span>
+                                </td>
+                                <td class="p-4">
+                                    <span class="block text-stone-700"><%= o.shipping_address %></span>
+                                    <span class="text-stone-400">Tel: <%= o.phone %></span>
+                                </td>
+                                <td class="p-4 font-serif font-bold text-stone-900">$<%= o.total.toLocaleString('es-CO') %></td>
+                                <td class="p-4">
+                                    <span class="bg-amber-100 text-amber-900 font-bold px-2.5 py-1 rounded-full uppercase text-[10px]">
+                                        <%= o.status %>
+                                    </span>
+                                </td>
+                                <td class="p-4 text-right">
+                                    <form action="/admin/pedidos/<%= o.id %>/estado" method="POST" class="inline-flex gap-2">
+                                        <select name="status" class="bg-stone-100 border border-stone-300 rounded-lg text-[11px] p-1.5 font-medium">
+                                            <option value="pending" <%= o.status === 'pending' ? 'selected' : '' %>>En cola</option>
+                                            <option value="tostado" <%= o.status === 'tostado' ? 'selected' : '' %>>Tostado</option>
+                                            <option value="despachado" <%= o.status === 'despachado' ? 'selected' : '' %>>Despachado</option>
+                                            <option value="entregado" <%= o.status === 'entregado' ? 'selected' : '' %>>Entregado</option>
+                                        </select>
+                                        <button type="submit" class="bg-coffee-900 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold hover:bg-coffee-800">
+                                            Guardar
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Catálogo de Lotes Administrables -->
+    <div class="bg-white rounded-3xl border border-stone-200 shadow-sm p-6">
+        <h3 class="font-serif text-xl font-bold text-stone-900 mb-6">Inventario de Lotes de Café</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <% products.forEach(function(p) { %>
+                <div class="border border-stone-200 rounded-2xl p-4 flex flex-col justify-between space-y-3">
+                    <img src="<%= p.image_url %>" alt="<%= p.name %>" class="w-full h-32 object-cover rounded-xl bg-stone-100">
+                    <div>
+                        <span class="text-[10px] font-bold text-amber-700 uppercase"><%= p.variety %> &bull; <%= p.process %></span>
+                        <h4 class="font-serif font-bold text-stone-900 text-sm"><%= p.name %></h4>
+                        <span class="font-bold text-coffee-950 text-sm mt-1 block">$<%= p.price.toLocaleString('es-CO') %> COP</span>
+                        <span class="text-stone-400 text-xs">Stock: <%= p.stock %> bolsas</span>
+                    </div>
+                    <form action="/admin/productos/<%= p.id %>/eliminar" method="POST" onsubmit="return confirm('¿Seguro de eliminar este café?');">
+                        <button type="submit" class="w-full text-center text-xs text-rose-600 hover:text-rose-800 font-bold py-1.5 border border-rose-200 rounded-lg hover:bg-rose-50 transition">
+                            Eliminar Lote
+                        </button>
+                    </form>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</div>
