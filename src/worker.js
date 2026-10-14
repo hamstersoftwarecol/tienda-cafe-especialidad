@@ -59,29 +59,29 @@ app.get('/', async (c) => {
   const featured = products.filter(p => p.is_featured === 1);
 
   const content = `
-    <!-- Hero Section -->
-    <section class="relative bg-coffee-950 text-white overflow-hidden py-24 lg:py-32">
-        <div class="absolute inset-0 opacity-30 mix-blend-overlay">
-            <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1600&q=80" alt="Cafetal" class="w-full h-full object-cover">
+    <!-- Hero Section con Fondo de Caficultor -->
+    <section class="relative bg-coffee-950 text-white overflow-hidden py-28 lg:py-36">
+        <div class="absolute inset-0 opacity-45 mix-blend-luminosity">
+            <img src="/images/caficultor-hero.jpg" alt="Caficultor recolectando café de especialidad" class="w-full h-full object-cover object-center scale-105 transform hover:scale-100 transition duration-1000">
         </div>
-        <div class="absolute inset-0 bg-gradient-to-r from-coffee-950 via-coffee-950/80 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-coffee-950 via-coffee-950/85 to-coffee-950/60"></div>
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="max-w-2xl space-y-6">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-semibold tracking-wider uppercase">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-semibold tracking-wider uppercase backdrop-blur-sm">
                     <i class="fa-solid fa-award"></i> Café de Especialidad &bull; Cosecha 2026
                 </div>
-                <h1 class="font-serif text-4xl sm:text-6xl font-bold tracking-tight text-white leading-tight">
+                <h1 class="font-serif text-4xl sm:text-6xl font-bold tracking-tight text-white leading-tight drop-shadow-md">
                     El alma de la montaña en cada taza.
                 </h1>
-                <p class="text-lg text-stone-300 font-light leading-relaxed">
+                <p class="text-lg text-stone-200 font-light leading-relaxed drop-shadow">
                     Somos caficultores de tercera generación. Cosechamos cerezas seleccionadas a mano sobre los 1,850 metros de altura, tostadas semanalmente.
                 </p>
                 <div class="pt-4 flex flex-wrap gap-4">
-                    <a href="/tienda" class="inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold px-7 py-3.5 rounded-full shadow-lg transition">
+                    <a href="/tienda" class="inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold px-7 py-3.5 rounded-full shadow-lg shadow-amber-900/40 transition transform hover:-translate-y-0.5">
                         <span>Comprar Microlotes</span>
                         <i class="fa-solid fa-arrow-right text-sm"></i>
                     </a>
-                    <a href="/origen" class="inline-flex items-center gap-2 bg-stone-900/80 hover:bg-stone-800 text-white font-semibold px-7 py-3.5 rounded-full border border-stone-700 transition">
+                    <a href="/origen" class="inline-flex items-center gap-2 bg-stone-900/90 hover:bg-stone-800 text-white font-semibold px-7 py-3.5 rounded-full border border-stone-600 backdrop-blur transition">
                         <i class="fa-solid fa-mountain"></i>
                         <span>Conocer la Finca</span>
                     </a>
